@@ -19,7 +19,7 @@ fetch(
 
     const movies = res.results;
 
-    const main = document.querySelector("main");
+    const cardContainer = document.querySelector(".card-container");
 
     movies.forEach((movie) => {
       const movieCard = document.createElement("div");
@@ -30,7 +30,7 @@ fetch(
         <h2>${movie.original_title}</h2>
       `;
 
-      main.appendChild(movieCard);
+      cardContainer.appendChild(movieCard);
     });
   })
   .catch((err) => console.error(err));
