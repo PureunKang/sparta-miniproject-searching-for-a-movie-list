@@ -3,13 +3,39 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Searching for a Movie</title>
+    <title>Movie List</title>
+    <link
+      rel="icon"
+      href="./img/favicon.ico"
+      type="image/x-icon"
+      sizes="16x16"
+    />
     <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Staatliches&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
+    />
     <script defer src="javasc.js"></script>
   </head>
   <body>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <h1>TMDB Popular Movies</h1>
-    <!-- 참고 링크 : https://velog.io/@ncookie/IMDB-TMDB-API-사용법-정리 -->
+    <header>
+      <div class="search-field">
+        <input type="text" placeholder="영화 제목을 입력해 주세요" />
+      </div>
+      <div class="title">
+        <div>Search<br />for a Movie</div>
+      </div>
+    </header>
+    <main></main>
+    <footer></footer>
   </body>
 </html>

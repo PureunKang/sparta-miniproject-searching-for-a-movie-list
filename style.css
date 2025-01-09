@@ -1,0 +1,82 @@
+* {
+  margin: 0;
+  padding: 0;
+
+  color: white;
+  font-family: Pretendard, sans-serif;
+}
+
+header {
+  background-image: url("./img/cinema.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100vh;
+}
+
+.search-field {
+  text-align: center;
+}
+
+.search-field input {
+  background-color: transparent;
+  border-width: 1px 0;
+  border-style: solid;
+  border-color: #ccc;
+  width: 600px;
+  height: 20px;
+  color: #ccc;
+  padding: 10px;
+  margin-top: 40px;
+  margin-bottom: 10px;
+  outline: none;
+}
+
+.search-field input:focus {
+  border-color: #b81d24;
+  border-width: 1px;
+}
+
+.search-field input::placeholder {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.search-field input:focus::placeholder {
+  opacity: 1;
+  color: #aaa;
+  font-size: 14px;
+}
+
+.title {
+  font-family: "Staatliches", serif;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.title div {
+  font-family: "Staatliches", serif;
+  font-size: 200px;
+  line-height: 0.7;
+  color: #aaa;
+}
+
+main {
+  background-color: black;
+  display: flex;
+  text-align: center;
+  flex-wrap: wrap;
+  font-size: 10px;
+}
+
+.movie-card img {
+  width: 200px;
+  height: 300px;
+  object-fit: cover;
+}
+
+footer {
+  background-color: black;
+}

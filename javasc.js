@@ -7,10 +7,30 @@ const options = {
   },
 };
 
+const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
+
 fetch(
   "https://api.themoviedb.org/3/movie/popular?language=ko-KR&page=1",
   options
 )
   .then((res) => res.json())
-  .then((res) => console.log("popular movies: ", res))
+  .then((res) => {
+    console.log("popular movies: ", res);
+
+    const movies = res.results;
+
+    const main = document.querySelector("main");
+
+    movies.forEach((movie) => {
+      const movieCard = document.createElement("div");
+      movieCard.classList.add("movie-card");
+
+      movieCard.innerHTML = `
+        <img src="${IMAGE_BASE_URL + movie.poster_path}" alt="${movie.title}" />
+        <h2>${movie.original_title}</h2>
+      `;
+
+      main.appendChild(movieCard);
+    });
+  })
   .catch((err) => console.error(err));
