@@ -26,13 +26,17 @@
     <script defer src="javasc.js"></script>
   </head>
   <body>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <header>
       <div class="title">Search<br />for a Movie</div>
     </header>
     <main>
       <div class="search-field">
-        <input type="text" placeholder="영화 제목을 입력해 주세요" />
+        <input
+          type="text"
+          name="name"
+          placeholder="영화 제목을 입력해 주세요"
+        />
+        <input type="button" name="name" value="검색" />
       </div>
       <div class="card-container"></div>
     </main>

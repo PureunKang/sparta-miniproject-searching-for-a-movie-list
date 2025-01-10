@@ -8,29 +8,58 @@ const options = {
 };
 
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
+const cardContainer = document.querySelector(".card-container");
 
-fetch(
-  "https://api.themoviedb.org/3/movie/popular?language=ko-KR&page=1",
-  options
-)
-  .then((res) => res.json())
-  .then((res) => {
-    console.log("popular movies: ", res);
+let page = 1;
+let isLoading = false;
 
-    const movies = res.results;
+// 영화 데이터를 화면에 추가하는 함수
+const renderMovies = (movies) => {
+  movies.forEach((movie) => {
+    const movieCard = document.createElement("div");
+    movieCard.classList.add("movie-card");
 
-    const cardContainer = document.querySelector(".card-container");
+    movieCard.innerHTML = `
+      <img src="${IMAGE_BASE_URL + movie.poster_path}" alt="${movie.title}" />
+      <h2>${movie.original_title}</h2>
+    `;
 
-    movies.forEach((movie) => {
-      const movieCard = document.createElement("div");
-      movieCard.classList.add("movie-card");
+    cardContainer.appendChild(movieCard);
+  });
+};
 
-      movieCard.innerHTML = `
-        <img src="${IMAGE_BASE_URL + movie.poster_path}" alt="${movie.title}" />
-        <h2>${movie.original_title}</h2>
-      `;
+// 목록 출력을 위한 API 호출 함수
+const fetchPopularMovies = function (page) {
+  if (isLoading) return;
 
-      cardContainer.appendChild(movieCard);
+  isLoading = true;
+  fetch(
+    `https://api.themoviedb.org/3/movie/popular?language=ko-KR&page=${page}`,
+    options
+  )
+    .then((res) => res.json())
+    .then((res) => {
+      renderMovies(res.results);
+      isLoading = false; // 로딩 상태 해제
+    })
+    .catch((err) => {
+      console.error(err);
+      isLoading = false;
     });
-  })
-  .catch((err) => console.error(err));
+};
+
+// 새로고침되자마자 바로 실행
+document.addEventListener("DOMContentLoaded", () => {
+  fetchPopularMovies(page); // 첫 번째 페이지 데이터를 로드
+});
+
+// 스크롤 이벤트
+window.addEventListener("scroll", function () {
+  if (
+    window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
+    !isLoading
+  ) {
+    page++;
+    fetchPopularMovies(page); // ++된 페이지의 데이터 요청
+  }
+});
