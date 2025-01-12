@@ -7,7 +7,7 @@ const options = {
   },
 };
 
-const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
+const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w185";
 const cardContainer = document.querySelector(".card-container");
 
 let page = 1;
@@ -21,7 +21,6 @@ const renderMovies = (movies) => {
 
     movieCard.innerHTML = `
       <img src="${IMAGE_BASE_URL + movie.poster_path}" alt="${movie.title}" />
-      <h2>${movie.original_title}</h2>
     `;
 
     cardContainer.appendChild(movieCard);

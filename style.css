@@ -81,12 +81,6 @@ main {
   justify-content: center;
 }
 
-.movie-card img {
-  width: 200px;
-  height: 300px;
-  object-fit: cover;
-}
-
 footer {
   background-color: black;
 }
