@@ -8,7 +8,7 @@ const options = {
 };
 
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w185";
-const cardContainer = document.querySelector(".card-container");
+const $cardContainer = document.querySelector(".card-container");
 
 let page = 1;
 let isLoading = false;
@@ -16,14 +16,14 @@ let isLoading = false;
 // 영화 데이터를 화면에 추가하는 함수
 const renderMovies = (movies) => {
   movies.forEach((movie) => {
-    const movieCard = document.createElement("div");
-    movieCard.classList.add("movie-card");
+    const $movieCard = document.createElement("div");
+    $movieCard.classList.add("movie-card");
 
-    movieCard.innerHTML = `
+    $movieCard.innerHTML = `
       <img src="${IMAGE_BASE_URL + movie.poster_path}" alt="${movie.title}" />
     `;
 
-    cardContainer.appendChild(movieCard);
+    $cardContainer.appendChild($movieCard);
   });
 };
 
