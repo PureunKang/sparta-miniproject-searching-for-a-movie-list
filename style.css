@@ -79,6 +79,20 @@ main {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  margin: auto 10%;
+}
+
+.movie-card {
+  cursor: pointer;
+  margin: 10px 2px;
+  overflow: hidden;
+}
+.movie-card img {
+  transition: all 0.5s;
+}
+
+.movie-card:hover img {
+  transform: scale(1.1, 1.1);
 }
 
 footer {
@@ -100,13 +114,11 @@ footer {
 }
 
 .modal-content {
-  background: white;
-  color: black !important;
+  background: #232121;
   padding: 20px;
   border-radius: 5px;
   text-align: center;
   width: 80%;
-  max-width: 500px;
   position: relative;
 }
 
