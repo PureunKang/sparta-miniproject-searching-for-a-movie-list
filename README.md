@@ -9,6 +9,7 @@
 - https://aotoyae.tistory.com/entry/JS-내배캠-영화-검색-사이트-TMDB-API
 - https://velog.io/@hidaehyunlee/ES2020-click-enter-두-개의-이벤트-동시에-등록하기
 - https://velog.io/@o1011/JavaScript-디바운싱과-쓰로틀링
+- 프라미스올 : https://u-sang.tistory.com/17
 
 ---
 

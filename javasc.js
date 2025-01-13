@@ -22,6 +22,7 @@ const renderMovies = (movies) => {
   movies.forEach((movie) => {
     const $movieCard = document.createElement("div");
     $movieCard.classList.add("movie-card");
+    $movieCard.dataset.id = movie.id; // 영화 id 담아야 됨.
 
     $movieCard.innerHTML = `
       <img src="${IMAGE_BASE_URL + movie.poster_path}" alt="${movie.title}" />
@@ -106,6 +107,39 @@ const searchMovies = function (page) {
     });
 };
 
+const showModal = async (movieId) => {
+  try {
+    // 영화 상제 정보 API 호출
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}?language=ko-KR`,
+      options
+    );
+    const movieDetails = await response.json();
+
+    // 모달창
+    const modal = document.createElement("div");
+    modal.classList.add("modal");
+
+    // 모달창 상세 내용
+    modal.innerHTML = `
+      <div class='modal-content'>
+        <h2>${movieDetails.title}</h2>
+        <p>${movieDetails.overview}</p>
+        <button class='close-modal'>닫기</button>
+    `;
+
+    // 모달창 화면에 추가
+    document.body.appendChild(modal);
+
+    // 모달창 닫기
+    modal.querySelector(".close-modal").addEventListener("click", function () {
+      modal.remove();
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // 새로고침되자마자 바로 실행
 document.addEventListener("DOMContentLoaded", () => {
   fetchPopularMovies(page); // 첫 번째 페이지 데이터를 로드
@@ -145,4 +179,15 @@ $targetMovie.addEventListener("input", function () {
       searchMovies();
     }
   }, 500);
+});
+
+// 모달창
+$cardContainer.addEventListener("click", function (e) {
+  const movieCard = e.target.closest(".movie-card");
+
+  if (movieCard && e.target.tagName === "IMG") {
+    // DOM API의 tagName은 대문자 반환이라고함.
+    const movieId = movieCard.dataset.id; // 무비카드의 data-id에서 영화 id가져오기
+    showModal(movieId); // 영화 id로 모달 표시
+  }
 });
