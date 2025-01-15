@@ -38,6 +38,7 @@ main {
   width: 100%;
   position: sticky;
   top: 0px;
+  z-index: 2;
 }
 
 .search-field input[type="text"] {
@@ -50,12 +51,13 @@ main {
   color: #ccc;
   padding: 10px;
   margin-top: 40px;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   outline: none;
   font-size: 15px;
   padding-left: 5px;
   display: inline;
   box-sizing: border-box;
+  font-weight: lighter;
 }
 
 .search-field input[type="text"]::placeholder {
@@ -70,6 +72,7 @@ main {
   width: 60px;
   height: 40px;
   font-size: 15px;
+  font-weight: lighter;
   display: inline;
   margin-left: -63px;
   box-sizing: border-box;
@@ -80,6 +83,7 @@ main {
   flex-wrap: wrap;
   justify-content: center;
   margin: auto 10%;
+  z-index: 1;
 }
 
 .movie-card {
@@ -117,21 +121,68 @@ footer {
   background: #232121;
   padding: 20px;
   border-radius: 5px;
-  text-align: center;
   width: 80%;
   position: relative;
+  display: inline-block;
+}
+
+.modal-content img {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.modal-content .details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  position: absolute;
+}
+
+.modal-content .left {
+  width: 30%;
+  align-items: left;
+  text-align: right;
+}
+
+.modal-content .right {
+  width: 65%; /* 오른쪽 영역 너비 */
+  align-items: right;
+  margin-left: auto;
+  position: relative;
+  top: 5px;
+  box-sizing: border-box;
 }
 
 .modal-content button {
   margin-top: 10px;
+  margin-bottom: 10px;
   padding: 5px 10px;
-  background: red;
+  background: #1a1a1b;
   border: none;
   color: white;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 50%;
+  font-size: 15px;
 }
 
-.modal-content button:hover {
+.modal-content .close-modal:hover {
   background: darkred;
+}
+
+.modal-content .bookmark-btn:hover {
+  background: orange;
+}
+
+.list-link {
+  list-style: none;
+  margin-bottom: 20px;
+  font-size: 15px;
+  padding-bottom: 20px;
+}
+
+.list-link a {
+  color: #ccc;
+  font-weight: lighter;
 }

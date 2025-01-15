@@ -1,0 +1,105 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: Pretendard, sans-serif;
+  background-color: black;
+}
+
+header {
+  width: 80%;
+  margin: 0 auto;
+  color: #ccc;
+  font-size: 20px;
+  font-weight: lighter;
+  background-color: black;
+  display: flex;
+  position: sticky;
+  top: 0;
+}
+
+header div {
+  align-items: center;
+  /* display: inline-block; */
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.list-link {
+  list-style: none;
+  font-size: 13px;
+  padding: 15px 13px;
+}
+
+.list-link a {
+  color: #ccc;
+}
+
+main {
+  background-color: black;
+  text-align: center;
+}
+
+.favorites-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: auto 10%;
+}
+
+.movie-card {
+  cursor: pointer;
+  margin: 10px 2px;
+  overflow: hidden;
+}
+.movie-card img {
+  transition: all 0.5s;
+}
+
+.movie-card:hover img {
+  transform: scale(1.1, 1.1);
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #232121;
+  color: #ccc;
+  font-weight: lighter;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  width: 80%;
+  height: calc(80% * (9 / 16) * 1.5);
+  position: relative;
+}
+.modal-content h2 {
+  background-color: transparent;
+}
+.modal-content p {
+  background-color: transparent;
+}
+
+.modal-content button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background: #1a1a1b;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.modal-content button:hover {
+  background: darkred;
+}

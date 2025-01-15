@@ -110,11 +110,20 @@ const searchMovies = function (page) {
 const showModal = async (movieId) => {
   try {
     // 영화 상제 정보 API 호출
-    const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}?language=ko-KR`,
-      options
-    );
-    const movieDetails = await response.json();
+    const [movieDetails, videoDetails] = await Promise.all([
+      fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}?language=ko-KR`,
+        options
+      ).then((res) => res.json()),
+      fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}/videos?language=ko-KR`,
+        options
+      ).then((res) => res.json()),
+    ]);
+
+    const videoKey = videoDetails.results.find(
+      (video) => video.site === "YouTube" && video.type === "Trailer"
+    )?.key;
 
     // 모달창
     const modal = document.createElement("div");
@@ -123,9 +132,36 @@ const showModal = async (movieId) => {
     // 모달창 상세 내용
     modal.innerHTML = `
       <div class='modal-content'>
-        <h2>${movieDetails.title}</h2>
-        <p>${movieDetails.overview}</p>
-        <button class='close-modal'>닫기</button>
+      <button class='close-modal'>X</button> 
+      <button class='bookmark-btn'>찜</button> 
+         ${
+           videoKey
+             ? `<iframe 
+                class='video'
+                width="100%" 
+                height="315" 
+                src="https://www.youtube.com/embed/${videoKey}?autoplay=1" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+              </iframe>`
+             : `
+               <img src='https://image.tmdb.org/t/p/w780${movieDetails.backdrop_path}' />`
+         }
+        <div class='details left'>
+          <h1>${movieDetails.title} <span>(${movieDetails.release_date.slice(
+      0,
+      4
+    )})</span></h1>
+          <div><span>${movieDetails.runtime} 분</span></div>
+          
+        </div>
+        <div class='details right'>
+        <div>${movieDetails.overview}</div>
+<div>장르: ${movieDetails.genres.map((n) => n.name)}</div>
+<div>평점: ${Math.floor(movieDetails.vote_average)} / 10</div>
+</div>
+</div>
     `;
 
     // 모달창 화면에 추가
@@ -134,6 +170,11 @@ const showModal = async (movieId) => {
     // 모달창 닫기
     modal.querySelector(".close-modal").addEventListener("click", function () {
       modal.remove();
+    });
+
+    // 모달창 찜하기 버튼 이벤트
+    modal.querySelector(".bookmark-btn").addEventListener("click", function () {
+      saveToFavorites(movieDetails);
     });
   } catch (err) {
     console.error(err);
@@ -146,6 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // 스크롤 이벤트
+// 개선 필요함
 window.addEventListener("scroll", function () {
   if (
     window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
@@ -182,6 +224,7 @@ $targetMovie.addEventListener("input", function () {
 });
 
 // 모달창
+// 이벤트 위임 : e.target
 $cardContainer.addEventListener("click", function (e) {
   const movieCard = e.target.closest(".movie-card");
 
@@ -191,3 +234,17 @@ $cardContainer.addEventListener("click", function (e) {
     showModal(movieId); // 영화 id로 모달 표시
   }
 });
+
+// 로컬스토리지에서 찜한 영화 가져오기
+const saveToFavorites = (movie) => {
+  const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+  // 중복 제거
+  if (!favorites.some((fav) => fav.id === movie.id)) {
+    favorites.push(movie);
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+    alert("찜한 콘텐츠에 추가되었습니다!");
+  } else {
+    alert("이미 찜한 콘텐츠입니다!");
+  }
+};
