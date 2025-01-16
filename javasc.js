@@ -127,11 +127,6 @@ const showModal = async (movieId) => {
       (video) => video.site === "YouTube" && video.type === "Trailer"
     )?.key;
 
-    const isFavorited = (movieId) => {
-      const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-      return favorites.some((fav) => fav.id === movieId);
-    };
-
     // 모달창
     const modal = document.createElement("div");
     modal.classList.add("modal");
@@ -140,12 +135,7 @@ const showModal = async (movieId) => {
     modal.innerHTML = `
       <div class='modal-content'>
       <button class='close-modal'>X</button> 
-      <button class='bookmark-btn' style="display: ${
-        isFavorited(movieId) ? "none" : "block"
-      };">찜</button>
-        <button class='remove-bookmark' style="display: ${
-          isFavorited(movieId) ? "block" : "none"
-        };">찜 해제</button>
+      <button class='bookmark-btn'>찜</button>
          ${
            videoKey
              ? `<iframe 
@@ -187,17 +177,7 @@ const showModal = async (movieId) => {
     // 모달창 찜하기 버튼 이벤트
     modal.querySelector(".bookmark-btn").addEventListener("click", function () {
       saveToFavorites(movieDetails);
-      modal.querySelector(".bookmark-btn").style.display = "none";
-      modal.querySelector(".remove-bookmark").style.display = "block";
     });
-
-    modal
-      .querySelector(".remove-bookmark")
-      .addEventListener("click", function () {
-        removeFromFavorites(movieDetails);
-        modal.querySelector(".bookmark-btn").style.display = "block";
-        modal.querySelector(".remove-bookmark").style.display = "none";
-      });
   } catch (err) {
     console.error(err);
   }
@@ -266,13 +246,7 @@ const saveToFavorites = (movie) => {
     favorites.push(movie);
     localStorage.setItem("favorites", JSON.stringify(favorites));
     alert("찜한 콘텐츠에 추가되었습니다!");
+  } else {
+    alert(`이미 찜한 콘텐츠 입니다. 삭제는 리스트에서 해 주세요!`);
   }
-};
-
-// 로컬스토리지에서 찜한 영화 가져오기 ->
-const removeFromFavorites = (movie) => {
-  const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-  const updatedFavorites = favorites.filter((fav) => fav.id !== movie.id);
-  localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
-  alert("찜한 콘텐츠에서 제거되었습니다!");
 };
