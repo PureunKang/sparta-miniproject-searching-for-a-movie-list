@@ -25,7 +25,9 @@ const renderMovies = (movies) => {
     $movieCard.dataset.id = movie.id; // 영화 id 담아야 됨.
 
     $movieCard.innerHTML = `
-      <img src="${IMAGE_BASE_URL + movie.poster_path}" alt="${movie.title}" />
+      <img src="${IMAGE_BASE_URL + movie.poster_path}" alt="${
+      movie.title
+    }" width="185px" height="280px" onError="this.onerror=null; this.src=''; this.style.fontSize='20px'"; />
     `;
 
     $cardContainer.appendChild($movieCard);
@@ -125,6 +127,11 @@ const showModal = async (movieId) => {
       (video) => video.site === "YouTube" && video.type === "Trailer"
     )?.key;
 
+    const isFavorited = (movieId) => {
+      const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+      return favorites.some((fav) => fav.id === movieId);
+    };
+
     // 모달창
     const modal = document.createElement("div");
     modal.classList.add("modal");
@@ -133,7 +140,12 @@ const showModal = async (movieId) => {
     modal.innerHTML = `
       <div class='modal-content'>
       <button class='close-modal'>X</button> 
-      <button class='bookmark-btn'>찜</button> 
+      <button class='bookmark-btn' style="display: ${
+        isFavorited(movieId) ? "none" : "block"
+      };">찜</button>
+        <button class='remove-bookmark' style="display: ${
+          isFavorited(movieId) ? "block" : "none"
+        };">찜 해제</button>
          ${
            videoKey
              ? `<iframe 
@@ -175,7 +187,17 @@ const showModal = async (movieId) => {
     // 모달창 찜하기 버튼 이벤트
     modal.querySelector(".bookmark-btn").addEventListener("click", function () {
       saveToFavorites(movieDetails);
+      modal.querySelector(".bookmark-btn").style.display = "none";
+      modal.querySelector(".remove-bookmark").style.display = "block";
     });
+
+    modal
+      .querySelector(".remove-bookmark")
+      .addEventListener("click", function () {
+        removeFromFavorites(movieDetails);
+        modal.querySelector(".bookmark-btn").style.display = "block";
+        modal.querySelector(".remove-bookmark").style.display = "none";
+      });
   } catch (err) {
     console.error(err);
   }
@@ -235,7 +257,7 @@ $cardContainer.addEventListener("click", function (e) {
   }
 });
 
-// 로컬스토리지에서 찜한 영화 가져오기
+// 로컬스토리지에서 찜한 영화 가져오기 -> 중복검사 -> 저장
 const saveToFavorites = (movie) => {
   const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
@@ -244,7 +266,13 @@ const saveToFavorites = (movie) => {
     favorites.push(movie);
     localStorage.setItem("favorites", JSON.stringify(favorites));
     alert("찜한 콘텐츠에 추가되었습니다!");
-  } else {
-    alert("이미 찜한 콘텐츠입니다!");
   }
+};
+
+// 로컬스토리지에서 찜한 영화 가져오기 ->
+const removeFromFavorites = (movie) => {
+  const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+  const updatedFavorites = favorites.filter((fav) => fav.id !== movie.id);
+  localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+  alert("찜한 콘텐츠에서 제거되었습니다!");
 };

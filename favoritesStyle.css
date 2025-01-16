@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   font-family: Pretendard, sans-serif;
-  background-color: black;
+  /* background-color: black; */
 }
 
 header {
@@ -15,6 +15,7 @@ header {
   display: flex;
   position: sticky;
   top: 0;
+  z-index: 2;
 }
 
 header div {
@@ -37,6 +38,7 @@ header div {
 main {
   background-color: black;
   text-align: center;
+  z-index: 1;
 }
 
 .favorites-container {
@@ -74,32 +76,66 @@ main {
 
 .modal-content {
   background: #232121;
-  color: #ccc;
-  font-weight: lighter;
   padding: 20px;
   border-radius: 5px;
-  text-align: center;
   width: 80%;
-  height: calc(80% * (9 / 16) * 1.5);
   position: relative;
+  display: inline-block;
+  color: #ccc;
 }
-.modal-content h2 {
+
+.modal-content img {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.modal-content .details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  position: absolute;
   background-color: transparent;
 }
-.modal-content p {
+
+.modal-content .left {
+  width: 30%;
+  align-items: left;
+  text-align: right;
+  background-color: transparent;
+}
+
+.modal-content .right {
+  width: 65%; /* 오른쪽 영역 너비 */
+  align-items: right;
+  margin-left: auto;
+  position: relative;
+  top: 5px;
+  box-sizing: border-box;
   background-color: transparent;
 }
 
 .modal-content button {
   margin-top: 10px;
+  margin-bottom: 10px;
   padding: 5px 10px;
   background: #1a1a1b;
   border: none;
   color: white;
   cursor: pointer;
   border-radius: 50%;
+  font-size: 15px;
 }
 
-.modal-content button:hover {
+.modal-content .close-modal:hover {
   background: darkred;
+}
+
+.modal-content .remove-bookmark:hover {
+  background: orange;
+}
+
+body {
+  background-color: black;
 }
