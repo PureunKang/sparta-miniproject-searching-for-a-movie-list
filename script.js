@@ -1,11 +1,4 @@
-const options = {
-  method: "GET",
-  headers: {
-    accept: "application/json",
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM2QwMTJjOWViODEyOGJjNWE2MWM5MTIwZmQ5NTIwMSIsIm5iZiI6MTczNjI5OTE1Ni43NTcsInN1YiI6IjY3N2RkMjk0ZjJjNjIxODA3ZGJhZmJlMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.AFTn-3T1Ji6Ye4iJHwC_ahEhXOSdzuufhKhIlmONgdQ",
-  },
-};
+import { options } from "./movieAPI.js";
 
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w185";
 const MOVIE_BASE_URL = "https://api.themoviedb.org/3/search/movie";
@@ -17,7 +10,7 @@ const $btn = document.querySelector('input[type="button"]');
 let page = 1;
 let isLoading = false;
 
-// 영화 데이터를 화면에 추가하는 함수
+// popular movie API, 화면에 카드 형태로 만들기
 const renderMovies = (movies) => {
   movies.forEach((movie) => {
     const $movieCard = document.createElement("div");
@@ -34,29 +27,28 @@ const renderMovies = (movies) => {
   });
 };
 
-// 목록 출력을 위한 API 호출 함수
-const fetchPopularMovies = function (page) {
+// popular movie API 호출
+export const fetchPopularMovies = async function (page) {
   if (isLoading) return;
 
-  isLoading = true;
-  fetch(
-    `https://api.themoviedb.org/3/movie/popular?language=ko-KR&page=${page}`,
-    options
-  )
-    .then((res) => res.json())
-    .then((res) => {
-      renderMovies(res.results);
-      isLoading = false; // 로딩 상태 해제
-    })
-    .catch((err) => {
-      console.error(err);
-      isLoading = false;
-    });
+  try {
+    isLoading = true;
+    const res = await fetch(
+      `https://api.themoviedb.org/3/movie/popular?language=ko-KR&page=${page}`,
+      options
+    );
+    const data = await res.json();
+    renderMovies(data.results);
+    isLoading = false;
+  } catch (err) {
+    console.error(err);
+    isLoading = false;
+  }
 };
 
-// 검색을 위한 API 호출 함수
-// 한국어, 영어 검색 API 통합
-const searchMovies = function (page) {
+// search API 호출
+// (한국어, 영어 모두 검색 가능하도록) 한영 search API 통합
+const searchMovies = async function (page) {
   const movieName = $targetMovie.value.trim();
   if (!movieName) return;
 
@@ -67,20 +59,21 @@ const searchMovies = function (page) {
   let totalResults = [];
   let totalPages = 1;
 
-  const fetchAllPages = (language) => {
-    const fetchPage = (page) => {
-      return fetch(
-        `${MOVIE_BASE_URL}?query=${encodeURIComponent(
-          movieName
-        )}&include_adult=true&language=${language}&page=${page}`,
-        options
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          totalPages = data.total_pages;
-          totalResults = [...totalResults, ...data.results];
-        })
-        .catch((err) => console.error(err));
+  const fetchAllPages = async (language) => {
+    const fetchPage = async (page) => {
+      try {
+        const res = await fetch(
+          `${MOVIE_BASE_URL}?query=${encodeURIComponent(
+            movieName
+          )}&include_adult=true&language=${language}&page=${page}`,
+          options
+        );
+        const data = await res.json();
+        totalPages = data.total_pages;
+        totalResults = [...totalResults, ...data.results];
+      } catch (err) {
+        console.error(err);
+      }
     };
 
     const promises = [];
@@ -90,38 +83,39 @@ const searchMovies = function (page) {
 
     return Promise.all(promises);
   };
-  Promise.all([fetchAllPages("ko-KR"), fetchAllPages("en-US")])
-    .then(() => {
-      // 중복된 json 데이터 제거
-      const uniqueResults = totalResults.reduce((acc, current) => {
-        if (!acc.some((movie) => movie.id === current.id)) {
-          acc.push(current);
-        }
-        return acc;
-      }, []);
 
-      // 화면에 렌더링
-      renderMovies(uniqueResults);
-    })
-    .catch((err) => {
-      console.error(err);
-      isLoading = false;
-    });
+  try {
+    await Promise.all([fetchAllPages("ko-KR"), fetchAllPages("en-US")]);
+
+    // 중복 제거
+    const uniqueResults = totalResults.reduce((acc, current) => {
+      if (!acc.some((movie) => movie.id === current.id)) {
+        acc.push(current);
+      }
+      return acc;
+    }, []);
+
+    renderMovies(uniqueResults);
+  } catch (err) {
+    console.error(err);
+    isLoading = false;
+  }
 };
 
+// API 호출 및 모달창 관련
 const showModal = async (movieId) => {
   try {
-    // 영화 상제 정보 API 호출
-    const [movieDetails, videoDetails] = await Promise.all([
-      fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}?language=ko-KR`,
-        options
-      ).then((res) => res.json()),
-      fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/videos?language=ko-KR`,
-        options
-      ).then((res) => res.json()),
-    ]);
+    const movieDetailsResponse = await fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}?language=ko-KR`,
+      options
+    );
+    const videoDetailsResponse = await fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}/videos?language=ko-KR`,
+      options
+    );
+
+    const movieDetails = await movieDetailsResponse.json();
+    const videoDetails = await videoDetailsResponse.json();
 
     const videoKey = videoDetails.results.find(
       (video) => video.site === "YouTube" && video.type === "Trailer"
@@ -174,7 +168,7 @@ const showModal = async (movieId) => {
       modal.remove();
     });
 
-    // 모달창 찜하기 버튼 이벤트
+    // 영화 찜하기
     modal.querySelector(".bookmark-btn").addEventListener("click", function () {
       saveToFavorites(movieDetails);
     });
@@ -189,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // 스크롤 이벤트
-// 개선 필요함
+// 개선 필요함 : 쓰로틀링 , Intersection Observer API
 window.addEventListener("scroll", function () {
   if (
     window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
@@ -247,6 +241,6 @@ const saveToFavorites = (movie) => {
     localStorage.setItem("favorites", JSON.stringify(favorites));
     alert("찜한 콘텐츠에 추가되었습니다!");
   } else {
-    alert(`이미 찜한 콘텐츠 입니다. 삭제는 리스트에서 해 주세요!`);
+    alert(`이미 찜한 콘텐츠 입니다!`);
   }
 };

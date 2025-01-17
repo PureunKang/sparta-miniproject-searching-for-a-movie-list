@@ -1,18 +1,11 @@
-const options = {
-  method: "GET",
-  headers: {
-    accept: "application/json",
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM2QwMTJjOWViODEyOGJjNWE2MWM5MTIwZmQ5NTIwMSIsIm5iZiI6MTczNjI5OTE1Ni43NTcsInN1YiI6IjY3N2RkMjk0ZjJjNjIxODA3ZGJhZmJlMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.AFTn-3T1Ji6Ye4iJHwC_ahEhXOSdzuufhKhIlmONgdQ",
-  },
-};
+import { options } from "./movieAPI.js";
+
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w185";
 
 const $favoritesContainer = document.querySelector(".favorites-container");
 
-// 영화 데이터 렌더링
+// 로컬스토리지에서 찜한 영화 가져오기 -> 화면에 띄우기
 const renderFavorites = () => {
-  // 로컬스토리지에서 찜한 영화 가져오기
   const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
   if (favorites.length === 0) {
@@ -36,19 +29,20 @@ const renderFavorites = () => {
   });
 };
 
-// 모달창 띄우기
+// API 호출 및 모달창 관련
 const showModal = async (movieId) => {
   try {
-    const [movieDetails, videoDetails] = await Promise.all([
-      fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}?language=ko-KR`,
-        options
-      ).then((res) => res.json()),
-      fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/videos?language=ko-KR`,
-        options
-      ).then((res) => res.json()),
-    ]);
+    const movieDetailsResponse = await fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}?language=ko-KR`,
+      options
+    );
+    const videoDetailsResponse = await fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}/videos?language=ko-KR`,
+      options
+    );
+
+    const movieDetails = await movieDetailsResponse.json();
+    const videoDetails = await videoDetailsResponse.json();
 
     const videoKey = videoDetails.results.find(
       (video) => video.site === "YouTube" && video.type === "Trailer"
